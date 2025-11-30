@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Leitura</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <style>
+        /* --- ESTILOS GERAIS --- */
+        :root {
+            --bg-body: #f9fbfb;
+            --text-color: #333;
+            --primary-color: #2c3e50;
+            --accent-color: #c0392b;
+            --border-color: #e1e1e1;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Lato', sans-serif; background-color: var(--bg-body); color: var(--text-color); line-height: 1.6; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--primary-color); }
+
+        /* HEADER */
+        header {
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217153-e212234687ad?q=80&w=2070');
+            background-size: cover; background-position: center; height: 350px;
+            display: flex; align-items: center; justify-content: center; text-align: center; color: white;
+        }
+        header h1 { font-size: 3.5rem; margin-bottom: 10px; }
+
+        /* MENU DE NAVEGAÇÃO */
+        nav { background: white; position: sticky; top: 0; z-index: 1000; text-align: center; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; }
+        nav a { display: block; padding: 20px 25px; text-decoration: none; color: var(--primary-color); font-weight: bold; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        nav a:hover { color: var(--accent-color); background: #f9f9f9; }
+
+        /* Dropdown */
+        .dropdown { position: relative; }
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); top: 100%; left: 0; text-align: left; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a { border-bottom: 1px solid #eee; text-transform: none; }
+
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+        /* --- SEÇÃO DE INTRODUÇÃO (SOBRE O BLOG) --- */
+        .intro-blog {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px auto;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        .intro-blog h2 { font-size: 2.5rem; margin-bottom: 20px; color: var(--primary-color); }
+        .intro-blog p { font-size: 1.1rem; color: #555; margin-bottom: 15px; line-height: 1.8; }
+        .intro-blog .destaque-texto { color: var(--accent-color); font-weight: bold; font-family: 'Playfair Display', serif; font-style: italic; }
+
+        /* BARRA DE PESQUISA */
+        .search-wrapper { text-align: center; margin-bottom: 40px; }
+        #input-pesquisa {
+            width: 100%; max-width: 500px; padding: 15px 25px;
+            border: 1px solid #ddd; border-radius: 50px;
+            font-size: 1rem; font-family: 'Lato', sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03); transition: 0.3s; outline: none;
+        }
+        #input-pesquisa:focus { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        /* GRID DE POSTS */
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
+        .card { background: white; border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card-img-top { height: 180px; background-color: #ddd; background-size: cover; background-position: center; }
+        .card-body { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .badge-area { font-size: 0.7rem; text-transform: uppercase; font-weight: bold; color: var(--accent-color); margin-bottom: 10px; letter-spacing: 1px; }
+        .card h3 { font-size: 1.4rem; margin-bottom: 10px; line-height: 1.3; }
+        .meta-info { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
+        .resumo { font-size: 0.95rem; color: #555; margin-bottom: 20px; flex-grow: 1; }
+
+        .btn-ler { display: block; width: 100%; padding: 10px 0; text-align: center; border: 1px solid var(--primary-color); color: var(--primary-color); text-transform: uppercase; font-size: 0.8rem; font-weight: bold; cursor: pointer; background: transparent; transition: 0.3s; }
+        .btn-ler:hover { background: var(--primary-color); color: white; }
+
+        /* TELA DE LEITURA */
+        #tela-leitura { display: none; background: white; padding: 40px; border: 1px solid var(--border-color); }
+        .btn-voltar { border: none; background: none; cursor: pointer; color: #666; font-size: 1rem; margin-bottom: 20px; }
+        .texto-conteudo { white-space: pre-wrap; font-size: 1.1rem; color: #444; margin: 30px 0; }
+        .btn-download { background: var(--primary-color); color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; display: inline-block; margin-right: 10px; font-weight: bold; margin-bottom: 10px; }
+
+        footer { text-align: center; padding: 40px; color: #999; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>Estado de Leitura</h1>
+            <p>Acervo Acadêmico & Literário</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#" onclick="filtrar('tudo')">Início</a></li>
+            <li><a href="#" onclick="filtrar('Obras da Fuvest')">Obras da Fuvest</a></li>
+            <li class="dropdown">
+                <a href="#" onclick="filtrar('Língua Portuguesa')">Língua Portuguesa ▾</a>
+                <div class="dropdown-content">
+                    <a href="#" onclick="filtrar('Língua Portuguesa', 'Produção Escrita')">Produção Escrita</a>
+                    <a href="#" onclick="filtrar('Língua Portuguesa', 'Leitura')">Leitura</a>
+                    <a href="#" onclick="filtrar('Língua Portuguesa', 'Análise Linguística')">Análise Linguística</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="container">
+
+        <div id="tela-lista">
+
+            <section class="intro-blog">
+                <h2>Bem-vindos ao nosso Estado de Leitura</h2>
+                <p>
+                    Se para Manoel de Barros entrar em "estado de palavra" era atingir a liberdade dos pássaros e o brinquedo da linguagem, para nós, professores e futuros professores, o desafio é instaurar um <span class="destaque-texto">Estado de Leitura</span>.
+                </p>
+                <p>
+                    Desenvolvido pela turma do segundo semestre de 2025 da disciplina de Metodologia do Ensino de Português II, ministrada pela professora Claudia Rosa Riolfi na Universidade de São Paulo (USP), este blog nasce com o objetivo de ser um espaço de troca e construção conjunta.
+                </p>
+                <p>
+                    Aqui, a teoria da universidade aperta a mão da prática escolar. Convidamos você a navegar por nossas sequências, adaptar nossos materiais e, principalmente, dialogar conosco.
+                </p>
+                <p style="margin-top: 20px; font-weight: bold; color: var(--primary-color);">
+                    Sejam todos bem-vindos!
+                </p>
+            </section>
+
+            <div class="search-wrapper">
+                <input type="text" id="input-pesquisa" placeholder="🔍 Pesquisar por título, autor ou assunto..." onkeyup="pesquisarGlobal()">
+            </div>
+
+            <h2 id="titulo-secao" style="margin-bottom: 20px; border-left: 4px solid var(--accent-color); padding-left: 15px;">Destaques</h2>
+
+            <div id="grid-posts" class="posts-grid">
+                <p>Carregando...</p>
+            </div>
+        </div>
+
+        <div id="tela-leitura">
+            <button onclick="voltarParaLista()" class="btn-voltar">← Voltar</button>
+            <div style="border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                <small id="ler-area" class="badge-area">Área</small>
+                <h1 id="ler-titulo" style="font-size: 2.5rem; margin: 10px 0;">Titulo</h1>
+                <p>Por <strong id="ler-autor">Autor</strong> • <span id="ler-ano">Ano</span></p>
+            </div>
+            <div id="ler-texto" class="texto-conteudo"></div>
+            <div id="area-botoes"></div>
+        </div>
+    </main>
+
+    <footer>&copy; 2025 Blog MELP - Estado de Leitura</footer>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSHpZ-AxInGfWLfEmzBVfNcATN9wGgYW0bgUUJ_pn48LvfibiKYYxQdAwlgs4RtjyJnqq1k-v_Q3hJM/pub?output=csv';
+
+        let bancoDeDados = [];
+
+        function carregarBlog() {
+            Papa.parse(SHEET_URL, {
+                download: true,
+                header: false,
+                skipEmptyLines: true,
+                complete: function(resultados) {
+                    const linhas = resultados.data.slice(1); // Remove cabeçalho
+
+                    // CRIAÇÃO DO BANCO DE DADOS COM IDs
+                    bancoDeDados = linhas.map((c, index) => {
+                        return {
+                            id: index,      // ID Único para evitar erros de caracteres
+                            autor: c[0],    // Coluna A
+                            ano: c[1],      // Coluna B
+                            titulo: c[2],   // Coluna C
+                            texto: c[3],    // Coluna D
+                            link1: c[4],    // Coluna E
+                            link2: c[5],    // Coluna F
+                            link3: c[6],    // Coluna G
+                            area: c[7],     // Coluna H
+                            subarea: c[8]   // Coluna I
+                        };
+                    });
+
+                    renderizar(bancoDeDados);
+                },
+                error: function(err) {
+                    console.error("Erro PapaParse:", err);
+                }
+            });
+        }
+
+        // --- FUNÇÃO DE PESQUISA ---
+        function pesquisarGlobal() {
+            const termo = document.getElementById('input-pesquisa').value.toLowerCase();
+            const tituloEl = document.getElementById('titulo-secao');
+
+            if (termo === '') {
+                tituloEl.innerText = 'Destaques';
+                renderizar(bancoDeDados);
+                return;
+            }
+
+            tituloEl.innerText = `Resultados para "${termo}"`;
+            const filtrados = bancoDeDados.filter(post => {
+                const titulo = post.titulo?.toLowerCase() || '';
+                const autor = post.autor?.toLowerCase() || '';
+                const texto = post.texto?.toLowerCase() || '';
+                const area = post.area?.toLowerCase() || '';
+
+                return titulo.includes(termo) || autor.includes(termo) || texto.includes(termo) || area.includes(termo);
+            });
+            renderizar(filtrados);
+        }
+
+        // --- RENDERIZAÇÃO DOS CARDS ---
+        function renderizar(lista) {
+            const area = document.getElementById('grid-posts');
+            area.innerHTML = '';
+
+            if (lista.length === 0) {
+                area.innerHTML = '<p style="text-align:center; width:100%; color:#666;">Nenhum resultado encontrado.</p>'; return;
+            }
+
+            lista.forEach(post => {
+                let imgBg = 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=500';
+                const areaTexto = post.area ? post.area.toLowerCase() : '';
+
+                if(areaTexto.includes('fuvest')) imgBg = 'https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?w=500';
+                if(areaTexto.includes('portuguesa')) imgBg = 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=500';
+
+                area.innerHTML += `
+                    <div class="card">
+                        <div class="card-img-top" style="background-image: url('${imgBg}')"></div>
+                        <div class="card-body">
+                            <div class="badge-area">${post.area || ''}</div>
+                            <h3>${post.titulo || 'Sem Título'}</h3>
+                            <p class="meta-info">${post.autor || ''} • ${post.ano || ''}</p>
+                            <p class="resumo">${post.texto ? post.texto.substring(0, 100)+'...' : ''}</p>
+                            <button onclick="abrirPost(${post.id})" class="btn-ler">Ler Matéria</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- FILTROS DO MENU ---
+        function filtrar(cat, sub = null) {
+            voltarParaLista();
+            document.getElementById('input-pesquisa').value = ''; // Limpa pesquisa
+
+            const titulo = document.getElementById('titulo-secao');
+            if (cat === 'tudo') {
+                titulo.innerText = 'Destaques';
+                renderizar(bancoDeDados);
+            } else {
+                titulo.innerText = sub ? `${cat} > ${sub}` : cat;
+                const filtrados = bancoDeDados.filter(p => {
+                    const pArea = p.area ? p.area.toLowerCase() : '';
+                    const pSub = p.subarea ? p.subarea.toLowerCase() : '';
+                    if (sub) return pArea.includes(cat.toLowerCase()) && pSub.includes(sub.toLowerCase());
+                    return pArea.includes(cat.toLowerCase());
+                });
+                renderizar(filtrados);
+            }
+        }
+
+        // --- ABRIR POSTAGEM (USANDO ID) ---
+        function abrirPost(idBusca) {
+            const post = bancoDeDados.find(p => p.id === idBusca);
+            if(!post) return;
+
+            document.getElementById('ler-titulo').innerText = post.titulo;
+            document.getElementById('ler-autor').innerText = post.autor;
+            document.getElementById('ler-ano').innerText = post.ano;
+            document.getElementById('ler-area').innerText = post.area || '';
+            document.getElementById('ler-texto').innerText = post.texto;
+
+            const btns = document.getElementById('area-botoes');
+            btns.innerHTML = '';
+
+            // Botões de Download
+            if(post.link1 && post.link1.includes('http')) btns.innerHTML += `<a href="${post.link1}" target="_blank" class="btn-download">📄 Acessar Material 1</a>`;
+            if(post.link2 && post.link2.includes('http')) btns.innerHTML += `<a href="${post.link2}" target="_blank" class="btn-download" style="background-color: #5c5c8a; margin-left:10px;">📄 Acessar Material 2</a>`;
+            if(post.link3 && post.link3.includes('http')) btns.innerHTML += `<a href="${post.link3}" target="_blank" class="btn-download" style="background-color: #7d7dff; margin-left:10px;">📄 Acessar Material 3</a>`;
+
+            document.getElementById('tela-lista').style.display = 'none';
+            document.getElementById('tela-leitura').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function voltarParaLista() {
+            document.getElementById('tela-leitura').style.display = 'none';
+            document.getElementById('tela-lista').style.display = 'block';
+        }
+
+        carregarBlog();
+    </script>
+</body>
+</html>
