@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estado de Leitura</title>
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,43 +15,138 @@
 
     <style>
         /* --- ESTILOS GERAIS --- */
-        :root {
-            --bg-body: #fdfdfd;
-            --text-color: #2c2c2c;
-            --primary-color: #2c3e50;
-            --accent-color: #c0392b;
-            --border-color: #e5e5e5;
-            --whatsapp-color: #25D366;
-        }
+        :root { --bg-body: #ffffff; --text-color: #333; --primary-color: #2c3e50; --accent-color: #c0392b; --border-color: #eee; --whatsapp-color: #25D366; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Lato', sans-serif; background-color: var(--bg-body); color: var(--text-color); line-height: 1.8; }
+        body { font-family: 'Lato', sans-serif; background-color: var(--bg-body); color: var(--text-color); line-height: 1.8; overflow-x: hidden; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--primary-color); }
 
         /* HEADER */
         header {
             background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1507842217153-e212234687ad?q=80&w=2070');
-            background-size: cover; background-position: center; height: 320px;
-            display: flex; align-items: center; justify-content: center; text-align: center; color: white;
+            background-size: cover; background-position: center; height: 250px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; padding: 0 20px;
         }
-        header h1 { font-size: 3rem; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        header p { font-size: 1.1rem; opacity: 0.9; letter-spacing: 1px; }
+        header h1 { font-size: 2.5rem; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        header p { font-size: 1rem; opacity: 0.9; letter-spacing: 1px; }
 
-        /* MENU */
-        nav { background: white; position: sticky; top: 0; z-index: 1000; text-align: center; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; }
-        nav a { display: block; padding: 18px 22px; text-decoration: none; color: var(--primary-color); font-weight: bold; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; transition: 0.2s; }
+        /* --- MENU DE NAVEGAÇÃO (ESTILO LIMPO - SEM HAMBURGUER) --- */
+        nav {
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            min-height: 60px; /* Altura mínima */
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 5px 0;
+        }
+
+        .menu-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Lista Horizontal Sempre */
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap; /* Permite quebrar linha se a tela for muito minuscula */
+            justify-content: center;
+            align-items: center;
+            margin: 0; padding: 0;
+        }
+
+        nav a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: 0.2s;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
         nav a:hover { color: var(--accent-color); background: #fafafa; }
 
-        /* DROPDOWN */
+        /* Seta do Dropdown */
+        .arrow { display: inline-block; transition: transform 0.3s ease; margin-left: 5px; font-size: 0.7rem; }
+
+        /* Dropdown (Submenu) */
         .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); top: 100%; left: 0; text-align: left; }
-        .dropdown:hover .dropdown-content { display: block; }
-        .dropdown-content a { border-bottom: 1px solid #f0f0f0; text-transform: none; padding: 12px 20px; }
+
+        /* O menu dropdown flutuante */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%); /* Centraliza abaixo do item pai */
+            text-align: left;
+            z-index: 1001;
+            border-radius: 0 0 8px 8px;
+            border-top: 2px solid var(--accent-color);
+        }
+
+        /* Mostra dropdown ao passar o mouse (Desktop) */
+        @media (min-width: 769px) {
+            .dropdown:hover .dropdown-content { display: block; animation: slideUp 0.3s ease; }
+        }
+
+        /* Classe para mostrar dropdown via JS (Mobile/Click) */
+        .dropdown-content.show { display: block; animation: slideUp 0.3s ease; }
+
+        .dropdown-content a {
+            border-bottom: 1px solid #f5f5f5;
+            text-transform: none;
+            padding: 12px 20px;
+            white-space: nowrap; /* Não deixa o texto quebrar */
+            font-size: 0.85rem;
+        }
+        .dropdown-content a:hover { background-color: #f9f9f9; color: var(--accent-color); }
+
+        /* --- AJUSTES PARA CELULAR (SEM ESCONDER NADA) --- */
+        @media (max-width: 768px) {
+            header { height: 200px; }
+            header h1 { font-size: 1.8rem; }
+
+            nav { padding: 0; }
+            nav ul { width: 100%; justify-content: space-evenly; }
+
+            /* Diminui fonte e padding para caber na tela do celular */
+            nav a {
+                padding: 15px 5px;
+                font-size: 0.65rem; /* Fonte menor para caber */
+                text-align: center;
+            }
+
+            /* Dropdown no mobile */
+            .dropdown-content {
+                position: absolute; /* Flutua por cima do conteúdo */
+                width: 200px;
+                left: 50%; transform: translateX(-50%);
+            }
+
+            /* Seta gira quando ativo */
+            .dropdown.active .arrow { transform: rotate(180deg); }
+        }
 
         .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
 
         /* INTRODUÇÃO */
-        .intro-blog { text-align: center; max-width: 750px; margin: 0 auto 60px auto; padding-bottom: 40px; border-bottom: 1px solid var(--border-color); }
+        .intro-blog { text-align: center; max-width: 750px; margin: 0 auto 50px auto; padding-bottom: 30px; border-bottom: 1px solid var(--border-color); }
         .intro-blog h2 { font-size: 2.2rem; margin-bottom: 25px; color: var(--primary-color); }
         .intro-blog p { font-size: 1.1rem; color: #555; margin-bottom: 15px; }
         .destaque-texto { color: var(--accent-color); font-weight: bold; font-family: 'Playfair Display', serif; font-style: italic; }
@@ -58,17 +154,14 @@
         /* PESQUISA */
         .search-wrapper { text-align: center; margin-bottom: 50px; }
         #input-pesquisa {
-            width: 100%; max-width: 450px; padding: 12px 25px;
-            border: 1px solid #ddd; border-radius: 50px;
-            font-size: 1rem; font-family: 'Lato', sans-serif;
-            background: #fff;
+            width: 100%; max-width: 450px; padding: 12px 25px; border: 1px solid #ddd; border-radius: 50px;
+            font-size: 1rem; font-family: 'Lato', sans-serif; background: #fff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.3s; outline: none;
         }
         #input-pesquisa:focus { border-color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
         /* GRID POSTS */
         .posts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; }
-
         .card { background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.08); border-color: transparent; }
         .card-img-top { height: 200px; background-color: #f0f0f0; background-size: cover; background-position: center; }
@@ -77,77 +170,40 @@
         .card h3 { font-size: 1.3rem; margin-bottom: 10px; line-height: 1.35; color: #1a1a1a; }
         .meta-info { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
         .resumo { font-size: 0.95rem; color: #666; margin-bottom: 20px; flex-grow: 1; line-height: 1.6; }
-
         .btn-ler { display: block; width: 100%; padding: 12px 0; text-align: center; border: 1px solid var(--primary-color); color: var(--primary-color); text-transform: uppercase; font-size: 0.75rem; font-weight: bold; cursor: pointer; background: transparent; transition: 0.3s; border-radius: 4px; letter-spacing: 1px; }
         .btn-ler:hover { background: var(--primary-color); color: white; }
 
-        /* --- TELA DE LEITURA --- */
+        /* TELA DE LEITURA */
         #tela-leitura { display: none; background: white; padding: 50px 0; animation: fadeIn 0.4s ease; }
-
         .leitura-header { max-width: 750px; margin: 0 auto 30px auto; text-align: left; }
         .btn-voltar { background: none; border: none; color: #777; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 5px; margin-bottom: 20px; padding: 0; transition: 0.2s; }
         .btn-voltar:hover { color: var(--accent-color); }
-
         .leitura-title { font-size: 2.8rem; line-height: 1.2; margin-bottom: 15px; color: #111; }
+        @media (max-width: 768px) { .leitura-title { font-size: 2rem; } #tela-leitura { padding: 20px 0; } }
         .leitura-meta { color: #666; font-size: 0.95rem; border-left: 3px solid var(--accent-color); padding-left: 15px; margin-top: 20px; }
-
         .leitura-body { max-width: 750px; margin: 0 auto; font-size: 1.2rem; line-height: 1.8; color: #333; margin-bottom: 50px; }
 
-        /* SEÇÃO DE AÇÕES */
+        /* AÇÕES */
         .actions-container { max-width: 750px; margin: 0 auto; padding-top: 30px; border-top: 1px solid #eee; }
         .actions-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 15px; font-weight: bold; }
-
-        /* Grid de Downloads */
         .downloads-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-
-        .btn-file {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 15px; background: #f8f9fa; border: 1px solid #e0e0e0;
-            border-radius: 6px; text-decoration: none; color: #333; font-weight: bold; font-size: 0.9rem;
-            transition: 0.2s;
-        }
+        .btn-file { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; text-decoration: none; color: #333; font-weight: bold; font-size: 0.9rem; transition: 0.2s; }
         .btn-file:hover { background: white; border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); transform: translateY(-2px); }
         .btn-file span { font-size: 1.2rem; }
 
-        /* Compartilhamento */
         .share-row { display: flex; gap: 15px; flex-wrap: wrap; }
-        .btn-share {
-            display: flex; align-items: center; gap: 8px; padding: 10px 20px;
-            border-radius: 50px; font-size: 0.85rem; font-weight: bold; text-decoration: none; cursor: pointer; transition: 0.2s;
-        }
+        .btn-share { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .share-zap { background: white; border: 1px solid var(--whatsapp-color); color: var(--whatsapp-color); }
         .share-zap:hover { background: var(--whatsapp-color); color: white; }
-
         .share-copy { background: white; border: 1px solid #888; color: #555; }
         .share-copy:hover { background: #555; color: white; border-color: #555; }
 
-        /* --- NOTIFICAÇÃO TOAST (Link Copiado) --- */
-        #toast-box {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: var(--primary-color);
-            color: #fff;
-            text-align: center;
-            border-radius: 4px;
-            padding: 16px;
-            position: fixed;
-            z-index: 2000;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: opacity 0.5s, bottom 0.5s;
-        }
-
-        #toast-box.show {
-            visibility: visible;
-            opacity: 1;
-            bottom: 50px;
-        }
+        /* TOAST */
+        #toast-box { visibility: hidden; min-width: 250px; background-color: var(--primary-color); color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.5s, bottom 0.5s; }
+        #toast-box.show { visibility: visible; opacity: 1; bottom: 50px; }
 
         footer { text-align: center; padding: 40px; color: #999; font-size: 0.85rem; border-top: 1px solid #eee; margin-top: 60px; background: #fafafa; }
+        @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -161,24 +217,31 @@
     </header>
 
     <nav>
-        <ul>
-            <li><a href="#" onclick="filtrar('tudo')">Início</a></li>
-            <li><a href="#" onclick="filtrar('Obras da Fuvest')">Obras da Fuvest</a></li>
-            <li class="dropdown">
-                <a href="#" onclick="filtrar('Língua Portuguesa')">Língua Portuguesa ▾</a>
-                <div class="dropdown-content">
-                    <a href="#" onclick="filtrar('Língua Portuguesa', 'Produção Escrita')">Produção Escrita</a>
-                    <a href="#" onclick="filtrar('Língua Portuguesa', 'Leitura')">Leitura</a>
-                    <a href="#" onclick="filtrar('Língua Portuguesa', 'Análise Linguística')">Análise Linguística</a>
-                </div>
-            </li>
-        </ul>
+        <div class="menu-container">
+            <ul id="menu-list">
+                <li><a onclick="filtrar('tudo', null, true)">Início</a></li>
+                <li><a onclick="filtrar('Obras da Fuvest', null, true)">Obras da Fuvest</a></li>
+
+                <li class="dropdown" id="lp-dropdown">
+                    <a onclick="toggleDropdown(event)">
+                        Língua Portuguesa <span class="arrow">▾</span>
+                    </a>
+                    <div class="dropdown-content" id="lp-content">
+                        <a onclick="filtrar('Língua Portuguesa', null, true)">Ver Todas</a>
+                        <a onclick="filtrar('Língua Portuguesa', 'Produção Escrita', true)">Produção Escrita</a>
+                        <a onclick="filtrar('Língua Portuguesa', 'Leitura', true)">Leitura</a>
+                        <a onclick="filtrar('Língua Portuguesa', 'Análise Linguística', true)">Análise Linguística</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <main class="container">
 
         <div id="tela-lista">
-            <section class="intro-blog">
+
+            <section id="secao-intro" class="intro-blog">
                 <h2>Bem-vindos ao nosso Estado de Leitura</h2>
                 <p>
                     Se para Manoel de Barros entrar em "estado de palavra" era atingir a liberdade dos pássaros e o brinquedo da linguagem, para nós, professores e futuros professores, o desafio é instaurar um <span class="destaque-texto">Estado de Leitura</span>.
@@ -207,7 +270,7 @@
 
         <div id="tela-leitura">
             <div class="leitura-header">
-                <button onclick="voltarParaLista()" class="btn-voltar">← Voltar para o início</button>
+                <button onclick="filtrar('tudo', null, true)" class="btn-voltar">← Voltar para o início</button>
                 <small id="ler-area" class="badge-area">Área</small>
                 <h1 id="ler-titulo" class="leitura-title">Titulo da Matéria</h1>
                 <div class="leitura-meta">
@@ -236,6 +299,41 @@
 
         let bancoDeDados = [];
 
+        // --- LÓGICA DO MENU (SIMPLIFICADA) ---
+        // Agora só precisamos controlar o Dropdown
+        function toggleDropdown(e) {
+            // Em telas menores ou touch, ao clicar em "Língua Portuguesa", abre o menu
+            // Se for desktop, o CSS :hover já resolve, mas o clique não atrapalha
+            const dropdown = document.getElementById('lp-dropdown');
+            const content = document.getElementById('lp-content');
+
+            // Se já estiver aberto, fecha. Se não, abre.
+            if(content.classList.contains('show')) {
+                content.classList.remove('show');
+                dropdown.classList.remove('active');
+            } else {
+                e.preventDefault(); // Evita recarregar ou pular
+                content.classList.add('show');
+                dropdown.classList.add('active');
+            }
+        }
+
+        // Fechar o dropdown se clicar fora dele
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown a') && !event.target.matches('.dropdown span')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var arrows = document.getElementsByClassName("dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].classList.contains('show')) {
+                        dropdowns[i].classList.remove('show');
+                    }
+                }
+                for (var i = 0; i < arrows.length; i++) {
+                    arrows[i].classList.remove('active');
+                }
+            }
+        }
+
         function criarSlug(texto) {
             return texto.toString().toLowerCase()
                 .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -255,16 +353,32 @@
                             area: c[8], subarea: c[9]
                         };
                     });
-                    renderizar(bancoDeDados);
-                    const params = new URLSearchParams(window.location.search);
-                    const postSlug = params.get('post');
-                    if (postSlug) {
-                        const postEncontrado = bancoDeDados.find(post => criarSlug(post.titulo) === postSlug);
-                        if (postEncontrado) abrirPost(postEncontrado.id, false);
-                    }
+                    processarRota();
                 }
             });
         }
+
+        function processarRota() {
+            const params = new URLSearchParams(window.location.search);
+            const postSlug = params.get('post');
+            const cat = params.get('cat');
+            const sub = params.get('sub');
+
+            if (postSlug) {
+                const post = bancoDeDados.find(p => criarSlug(p.titulo) === postSlug);
+                if (post) abrirPost(post.id, false);
+            }
+            else if (cat) {
+                filtrar(cat, sub, false);
+            }
+            else {
+                filtrar('tudo', null, false);
+            }
+        }
+
+        window.addEventListener('popstate', function() {
+            processarRota();
+        });
 
         function renderizar(lista) {
             const area = document.getElementById('grid-posts');
@@ -285,11 +399,55 @@
                             <h3>${post.titulo || 'Sem Título'}</h3>
                             <p class="meta-info">${post.autor || ''}</p>
                             <p class="resumo">${post.texto ? post.texto.substring(0, 100)+'...' : ''}</p>
-                            <button onclick="abrirPost(${post.id})" class="btn-ler">Ler Matéria</button>
+                            <button onclick="abrirPost(${post.id}, true)" class="btn-ler">Ler Matéria</button>
                         </div>
                     </div>
                 `;
             });
+        }
+
+        function filtrar(cat, sub = null, atualizarUrl = true) {
+            document.getElementById('input-pesquisa').value = '';
+
+            // Fecha dropdown ao clicar num link
+            const content = document.getElementById('lp-content');
+            if(content) content.classList.remove('show');
+
+            document.getElementById('lp-dropdown').classList.remove('active');
+
+            if (atualizarUrl) {
+                if (cat === 'tudo') {
+                    window.history.pushState({}, '', window.location.pathname);
+                } else {
+                    const params = new URLSearchParams();
+                    params.set('cat', cat);
+                    if(sub) params.set('sub', sub);
+                    window.history.pushState({}, '', '?' + params.toString());
+                }
+            }
+
+            document.getElementById('tela-leitura').style.display = 'none';
+            document.getElementById('tela-lista').style.display = 'block';
+            window.scrollTo(0,0);
+
+            const titulo = document.getElementById('titulo-secao');
+            const intro = document.getElementById('secao-intro');
+
+            if (cat === 'tudo') {
+                titulo.innerText = 'Destaques';
+                if(intro) intro.style.display = 'block';
+                renderizar(bancoDeDados);
+            } else {
+                titulo.innerText = sub ? `${cat} > ${sub}` : cat;
+                if(intro) intro.style.display = 'none';
+                const filtrados = bancoDeDados.filter(p => {
+                    const pArea = p.area ? p.area.toLowerCase() : '';
+                    const pSub = p.subarea ? p.subarea.toLowerCase() : '';
+                    if (sub) return pArea.includes(cat.toLowerCase()) && pSub.includes(sub.toLowerCase());
+                    return pArea.includes(cat.toLowerCase());
+                });
+                renderizar(filtrados);
+            }
         }
 
         function abrirPost(idBusca, atualizarUrl = true) {
@@ -321,7 +479,6 @@
 
             if(divDownloads.innerHTML === '') divDownloads.innerHTML = '<p style="color:#999; font-style:italic;">Nenhum anexo disponível.</p>';
 
-            // Botões de Compartilhar
             divShare.innerHTML += `<button onclick="copiarLink()" class="btn-share share-copy">🔗 Copiar Link</button>`;
 
             const zapMsg = encodeURIComponent(`Olha que legal esse material: "${post.titulo}". Acesse: `);
@@ -330,22 +487,17 @@
 
             document.getElementById('tela-lista').style.display = 'none';
             document.getElementById('tela-leitura').style.display = 'block';
+
+            const intro = document.getElementById('secao-intro');
+            if(intro) intro.style.display = 'none';
+
             window.scrollTo(0,0);
         }
 
-        function voltarParaLista() {
-            const urlLimpa = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            window.history.pushState({path: urlLimpa}, '', urlLimpa);
-            document.getElementById('tela-leitura').style.display = 'none';
-            document.getElementById('tela-lista').style.display = 'block';
-        }
-
-        // --- FUNÇÃO NOVA DE TOAST (Substitui o Alert) ---
         function copiarLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 const toast = document.getElementById("toast-box");
                 toast.className = "show";
-                // Some depois de 3 segundos
                 setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
             });
         }
@@ -353,8 +505,18 @@
         function pesquisarGlobal() {
             const termo = document.getElementById('input-pesquisa').value.toLowerCase();
             const tituloEl = document.getElementById('titulo-secao');
-            if (termo === '') { tituloEl.innerText = 'Destaques'; renderizar(bancoDeDados); return; }
+            const intro = document.getElementById('secao-intro');
+
+            if (termo === '') {
+                tituloEl.innerText = 'Destaques';
+                if(intro) intro.style.display = 'block';
+                renderizar(bancoDeDados);
+                return;
+            }
+
             tituloEl.innerText = `Resultados para "${termo}"`;
+            if(intro) intro.style.display = 'none';
+
             const filtrados = bancoDeDados.filter(post => {
                 const titulo = post.titulo?.toLowerCase() || '';
                 const autor = post.autor?.toLowerCase() || '';
@@ -363,23 +525,6 @@
                 return titulo.includes(termo) || autor.includes(termo) || texto.includes(termo) || area.includes(termo);
             });
             renderizar(filtrados);
-        }
-
-        function filtrar(cat, sub = null) {
-            voltarParaLista();
-            document.getElementById('input-pesquisa').value = '';
-            const titulo = document.getElementById('titulo-secao');
-            if (cat === 'tudo') { titulo.innerText = 'Destaques'; renderizar(bancoDeDados); }
-            else {
-                titulo.innerText = sub ? `${cat} > ${sub}` : cat;
-                const filtrados = bancoDeDados.filter(p => {
-                    const pArea = p.area ? p.area.toLowerCase() : '';
-                    const pSub = p.subarea ? p.subarea.toLowerCase() : '';
-                    if (sub) return pArea.includes(cat.toLowerCase()) && pSub.includes(sub.toLowerCase());
-                    return pArea.includes(cat.toLowerCase());
-                });
-                renderizar(filtrados);
-            }
         }
 
         carregarBlog();
