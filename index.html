@@ -111,8 +111,20 @@
         #toast-box { visibility: hidden; min-width: 250px; background-color: var(--primary-color); color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.5s, bottom 0.5s; }
         #toast-box.show { visibility: visible; opacity: 1; bottom: 50px; }
 
-        footer { text-align: center; padding: 40px; color: #999; font-size: 0.85rem; border-top: 1px solid #eee; margin-top: 60px; background: #fafafa; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+            background: #fafafa;
+        }
+        footer p { margin-bottom: 10px; }
+        footer strong { color: var(--primary-color); }
+        footer a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+        footer a:hover { text-decoration: underline; }
+
     </style>
 </head>
 <body>
@@ -198,7 +210,11 @@
 
     <div id="toast-box">Link copiado com sucesso! ✅</div>
 
-    <footer>&copy; 2025 Blog MELP - Estado de Leitura</footer>
+    <footer>
+        <p><strong>Criado por:</strong> Adassa Bacci Abrahão Oliveira Amaral e Jheniffer Domingues Caetano</p>
+        <p>📧 Contato: <a href="mailto:blogmelp2@gmail.com">blogmelp2@gmail.com</a></p>
+        <p style="margin-top: 20px; font-size: 0.75rem; opacity: 0.7;">&copy; 2025 Estado de Leitura - MELP 2 USP</p>
+    </footer>
 
     <script>
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSHpZ-AxInGfWLfEmzBVfNcATN9wGgYW0bgUUJ_pn48LvfibiKYYxQdAwlgs4RtjyJnqq1k-v_Q3hJM/pub?output=csv';
