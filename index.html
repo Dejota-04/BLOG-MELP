@@ -316,7 +316,8 @@
                         let titulo = c[2] || "Sem Titulo";
                         let autor = c[0] || "Desconhecido";
 
-                        let rawSlug = titulo + "-" + autor;
+                        // ALTERAÇÃO: URL agora é apenas o título
+                        let rawSlug = titulo;
                         let baseSlug = criarSlug(rawSlug);
 
                         let uniqueSlug = baseSlug;
